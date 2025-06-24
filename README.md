@@ -21,3 +21,14 @@
 5. インストール完了後、MariaDBサービスが起動していることを確認します。  
 6. コマンドプロンプト（またはターミナル）で以下を実行し、MariaDBに接続できるか確認します。  
 7.パスワードを入力し、ログインできれば成功です。
+
+# 勤怠管理ツール ファイル構成
+```
+kintai-management/
+│
+├─ attendance.xlsm ← 残業反映表
+├─ python_script.py ← Pythonの勤怠処理スクリプト
+├─ requirements.txt ← Python依存ライブラリ一覧
+├─ maria_init.sql ← MariaDB初期化用SQLスクリプト
+└─ README.md ← この説明書
+```
