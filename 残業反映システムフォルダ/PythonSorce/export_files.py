@@ -13,7 +13,10 @@ import traceback
 4 : DBに12件未満
 9 : その他予期せぬ例外
 """
-
+   # 出力先の「過去年度フォルダ」ルート
+#--------------変更箇所-----------------------------------------------------    
+root_folder = Path("C:/Users/Exitotrinity-13/Desktop/残業反映システムフォルダ/過去年度フォルダ")
+#--------------------------------------------------------------------------   
 def export_annual_files_from_db(fiscal_year: int):
     conn = None
     cursor = None
@@ -48,8 +51,6 @@ def export_annual_files_from_db(fiscal_year: int):
                 print(4)
                 return
 
-            # 出力先の「過去年度フォルダ」ルート
-            root_folder = Path("C:/Users/Exitotrinity-13/Desktop/残業反映システムフォルダ/過去年度フォルダ")
 
             # 出力年度フォルダ（例：2022年度_勤怠管理フォルダ）
             output_root = root_folder / f"{fiscal_year}年度_勤怠管理フォルダ"
