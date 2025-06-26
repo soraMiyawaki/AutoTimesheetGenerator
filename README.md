@@ -80,4 +80,21 @@
   cd "%USERPROFILE%\Desktop\残業反映システム"
   mysql -u root -p -P 3306 < init_exit_db.sql
 ```
-  
+
+## 初期手順
+
+1. 緑色の「CODE」を押下して ZIP でダウンロードします。
+
+2. ダウンロードが出来たら、デスクトップへ展開します。
+
+3. 展開した「AutoTimesheetGenerator-main」へ入り、「残業反映システムフォルダ」を自身のデスクトップへコピーします。
+
+4. 「PythonSorce」へ入り「export_files.py」をメモ帳で開きます。
+
+5. 下記ファイルパスを自身のユーザーネームへ変更し、保存します。
+
+    ```python
+    # 出力先の「過去年度フォルダ」ルート
+    root_folder = Path("C:/Users/YourUserName/Desktop/残業反映システムフォルダ/過去年度フォルダ")
+    ```
+
