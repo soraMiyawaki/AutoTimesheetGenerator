@@ -4,6 +4,8 @@ import re
 from collections import defaultdict
 import sys
 import traceback
+import shutil
+
 """
 エラーコード一覧（コンソール上で返す整数値）
 0 : 正常終了
@@ -16,15 +18,17 @@ import traceback
 7 : DB保存失敗
 9 : その他の予期せぬ例外
 """
+
 def extract_month_from_filename(filename: str) -> int:
-    match = re.search(r'_(\d{4})_(\d{1,2})', filename)
+    match = re.search(r'(\d{4})年(\d{1,2})月', filename)
     if match:
         return int(match.group(2))
     else:
         raise ValueError(f"ファイル名から月が抽出できません: {filename}")
 
 def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
-    with open("save_log_detail.txt", "w", encoding="utf-8") as log:
+    log_path = Path(__file__).parent / "save_log_detail.txt"
+    with open(log_path, "w", encoding="utf-8") as log:
         conn = None
         cursor = None
         try:
@@ -57,7 +61,6 @@ def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
                         files_by_month[month].append(file_path)
                     except ValueError as e:
                         log.write(f"ファイル名抽出失敗: {file_path.name} 理由: {e}\n")
-                        # 月抽出失敗のファイルは無視してログ出力のみ
                         print(3)
                         return
 
@@ -88,6 +91,9 @@ def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
                     return
 
                 try:
+                    #デバッグ用
+                    # log.write(f"使用される年度（fiscal_year）: {fiscal_year}\n")
+
                     cursor.execute(
                         """
                         INSERT INTO files (fiscal_year, month, file_name, file_blob)
@@ -108,7 +114,11 @@ def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
             conn.commit()
             log.write("保存成功：12か月分すべて保存完了\n")
             print(0)  # 正常終了
-
+            try:
+                shutil.rmtree(base_folder)
+                log.write(f"フォルダ削除成功: {base_folder}\n")
+            except Exception as e:
+                log.write(f"フォルダ削除失敗: {base_folder} 理由: {str(e)}\n")
         except Exception as e:
             if conn and conn.in_transaction:
                 conn.rollback()
@@ -116,7 +126,6 @@ def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
             log.write(traceback.format_exc())
             print(9)  # その他例外
             return
-
         finally:
             if cursor:
                 cursor.close()
@@ -125,6 +134,18 @@ def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
 
 
 if __name__ == "__main__":
-    fiscal_year_arg = 2023
-    base_folder_arg = r"C:\Users\Exitotrinity-13\Desktop\2023年度_勤怠管理フォル"
+    if len(sys.argv) != 3:
+        print("Usage: python save_script.py <fiscal_year> <base_folder>")
+        print(9)
+        sys.exit(9)
+
+    try:
+        fiscal_year_arg = int(sys.argv[1])
+    except ValueError:
+        print("年度は整数で指定してください。")
+        print(9)
+        sys.exit(9)
+
+    base_folder_arg = sys.argv[2]
+
     save_annual_files_single_file_per_month(fiscal_year_arg, base_folder_arg)
