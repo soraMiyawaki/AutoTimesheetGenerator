@@ -4,23 +4,10 @@ import shutil
 import sys
 import traceback
 
-"""
-エラーコード一覧:
-0 : 正常終了
-1 : DB接続失敗
-2 : 出力フォルダ作成エラー
-3 : ファイル書込エラー
-4 : DBに12件未満
-9 : その他予期せぬ例外
-"""
-   # 出力先の「過去年度フォルダ」ルート
-#--------------変更箇所-----------------------------------------------------    
-root_folder = Path("C:/Users/Exitotrinity-13/Desktop/残業反映システムフォルダ/過去年度フォルダ")
-#--------------------------------------------------------------------------   
-def export_annual_files_from_db(fiscal_year: int):
+def export_annual_files_from_db(fiscal_year: int, output_root: Path):
     conn = None
     cursor = None
-    log_path = Path(__file__).parent / "export_log_detail.txt"
+    log_path = output_root / "export_log_detail.txt"
 
     with open(log_path, "w", encoding="utf-8") as log:
         try:
@@ -51,11 +38,10 @@ def export_annual_files_from_db(fiscal_year: int):
                 print(4)
                 return
 
-
-            # 出力年度フォルダ（例：2022年度_勤怠管理フォルダ）
-            output_root = root_folder / f"{fiscal_year}年度_勤怠管理フォルダ"
+            # 出力年度フォルダは既に VBA から渡されるフォルダパス（output_root）を使う
 
             # 「過去年度フォルダ」内のサブフォルダを全削除（1つだけに制限するため）
+            root_folder = output_root.parent
             if root_folder.exists():
                 for child in root_folder.iterdir():
                     if child.is_dir():
@@ -74,7 +60,6 @@ def export_annual_files_from_db(fiscal_year: int):
                     print(2)
                     return
 
-            # 必ず出力フォルダを作成する
             try:
                 output_root.mkdir(parents=True, exist_ok=True)
                 log.write(f"新規出力フォルダ作成: {output_root}\n")
@@ -109,11 +94,9 @@ def export_annual_files_from_db(fiscal_year: int):
             if conn:
                 conn.close()
 
-# ====================
-# エントリポイント
-# ====================
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
+        print("Usage: python save_db.py <fiscal_year> <output_folder>")
         print(9)
         sys.exit(9)
 
@@ -124,4 +107,6 @@ if __name__ == "__main__":
         print(9)
         sys.exit(9)
 
-    export_annual_files_from_db(fiscal_year_arg)
+    output_folder_arg = Path(sys.argv[2])
+
+    export_annual_files_from_db(fiscal_year_arg, output_folder_arg)
