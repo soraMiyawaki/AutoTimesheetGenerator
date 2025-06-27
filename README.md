@@ -77,8 +77,7 @@
 
 以下のコマンドで一括設定：
  ```
-  cd "%USERPROFILE%\Desktop\残業反映システム"
-  mysql -u root -p -P 3306 < init_exit_db.sql
+  Get-Content "C:\Users\your_username\AutoTimesheetGenerator-main\init_exit_db.sql" | mysql -u root -p -P 3306
 ```
 
 ## 初期手順
