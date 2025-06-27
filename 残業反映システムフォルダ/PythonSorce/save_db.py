@@ -33,13 +33,15 @@ def save_annual_files_single_file_per_month(fiscal_year: int, base_folder: str):
         cursor = None
         try:
             try:
+                # -----------------------------------
                 conn = mysql.connector.connect(
                     host="localhost",
-                    port=3309,
+                    port=3306,
                     user="root",
                     password="G1ps#solid",
-                    database="gips",
+                    database="EXIT",
                 )
+                # -----------------------------------
                 cursor = conn.cursor()
             except mysql.connector.Error as e:
                 log.write(f"DB接続失敗: {str(e)}\n")

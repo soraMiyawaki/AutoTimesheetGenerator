@@ -12,13 +12,15 @@ def export_annual_files_from_db(fiscal_year: int, output_root: Path):
     with open(log_path, "w", encoding="utf-8") as log:
         try:
             try:
+                # ---------------------------------------
                 conn = mysql.connector.connect(
                     host="localhost",
-                    port=3309,
+                    port=3306,
                     user="root",
                     password="G1ps#solid",
-                    database="gips",
+                    database="EXIT",
                 )
+                # ----------------------------------------
                 cursor = conn.cursor()
             except mysql.connector.Error as e:
                 log.write(f"DB接続失敗: {str(e)}\n")
