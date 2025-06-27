@@ -1,5 +1,5 @@
 -- データベース作成
-CREATE DATABASE IF NOT EXISTS EXIT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS `EXIT` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- 使用データベース指定
 USE EXIT;
