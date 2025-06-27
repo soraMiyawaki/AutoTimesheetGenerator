@@ -5,11 +5,17 @@ import sys
 import traceback
 
 def export_annual_files_from_db(fiscal_year: int, output_root: Path):
-    conn = None
-    cursor = None
-    log_path = output_root / "export_log_detail.txt"
+    log_path = Path(__file__).parent / "export_log_detail.txt"
+    output_root.parent.mkdir(parents=True, exist_ok=True)
+    output_root.mkdir(parents=True, exist_ok=True)
+   
 
     with open(log_path, "w", encoding="utf-8") as log:
+        log.write(f"引数 fiscal_year={fiscal_year}, output_root={output_root}\n")
+
+        conn = None
+        cursor = None
+
         try:
             try:
                 # ---------------------------------------
@@ -104,6 +110,8 @@ if __name__ == "__main__":
 
     try:
         fiscal_year_arg = int(sys.argv[1])
+        print(repr(sys.argv[1]), file=sys.stderr)  # デバッグ用（VBAには送られない）
+
     except ValueError:
         print("年度は整数で指定してください。", file=sys.stderr)
         print(9)
